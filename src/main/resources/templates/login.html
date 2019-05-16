@@ -33,40 +33,9 @@
     </div>
 </nav>
 <div class="container">
-    <form method="post" action="/scripts/save">
-        <div class="form-group">
-            <label>Name</label>
-            <input type="text" class="form-control" name="name" placeholder="name">
-        </div>
-
-        <div class="form-group">
-            <label>Description</label>
-            <select type="textarea" name="script" class="form-control" placeholder="description">
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label> Users </label>
-            <select name="Users" class="form-control">
-                <option>Select users</option>
-                <option value="1">User-1</option>
-                <option value="2">User-2</option>
-                <option value="3">User-3</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Servers</label>
-            <select name="server" class="form-control">
-                <option>Select a server</option>
-                <option value="1">Dev</option>
-                <option value="2">QA</option>
-                <option value="3">Prod</option>
-            </select>
-        </div>
-
-        <button type="submit" class="btn btn-default">Submit</button>
-    </form>
+    <p><a class="btn btn-primary btn-lg" href="/scripts/add" role="button">Add Scripts »</a></p>
+    <p><a class="btn btn-primary btn-lg" href="/scripts/addproject" role="button">Add Projects »</a></p>
+    <p><a class="btn btn-primary btn-lg" href="/scripts/addserver" role="button">Add Server »</a></p>
 
     <hr>
 

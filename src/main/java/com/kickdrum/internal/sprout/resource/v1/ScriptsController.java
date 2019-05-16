@@ -15,9 +15,26 @@ public class ScriptsController {
     @Autowired
     private ScriptService scriptService;
 
+
+    @GetMapping("/login")
+    public String loginPage(Model model){
+        return "login";
+    }
+
     @GetMapping("/add")
     public String addScriptsPage(Model model){
         return "add-scripts";
+    }
+
+
+    @GetMapping("/addproject")
+    public String addProjectsPage(Model model){
+        return "add-project";
+    }
+
+    @GetMapping("/addserver")
+    public String addServerPage(Model model) {
+        return "add-server";
     }
 
     @PostMapping("/save")
