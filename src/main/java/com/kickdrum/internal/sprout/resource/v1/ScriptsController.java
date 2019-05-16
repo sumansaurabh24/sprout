@@ -1,4 +1,4 @@
-package com.kickdrum.internal.sprout.resource;
+package com.kickdrum.internal.sprout.resource.v1;
 
 import com.kickdrum.internal.sprout.entity.Script;
 import com.kickdrum.internal.sprout.service.ScriptService;

@@ -1,4 +1,4 @@
-package com.kickdrum.internal.sprout.resource;
+package com.kickdrum.internal.sprout.resource.v1;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
