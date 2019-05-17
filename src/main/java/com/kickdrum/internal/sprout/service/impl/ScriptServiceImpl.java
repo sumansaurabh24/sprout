@@ -1,11 +1,14 @@
 package com.kickdrum.internal.sprout.service.impl;
 
 import com.kickdrum.internal.sprout.dao.ScriptDao;
+import com.kickdrum.internal.sprout.entity.Project;
 import com.kickdrum.internal.sprout.entity.Script;
 import com.kickdrum.internal.sprout.service.ScriptService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @Slf4j
@@ -17,5 +20,15 @@ public class ScriptServiceImpl implements ScriptService {
     @Override
     public Script findById(Long id) {
         return scriptDao.findById(id).orElse(null);
+    }
+
+    @Override
+    public Script save(Script scriptInput) {
+        return scriptDao.save(scriptInput);
+    }
+
+    @Override
+    public List<Script> findAll() {
+        return scriptDao.findAll();
     }
 }
