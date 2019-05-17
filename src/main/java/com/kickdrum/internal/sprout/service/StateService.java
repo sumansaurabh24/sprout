@@ -1,7 +1,8 @@
 package com.kickdrum.internal.sprout.service;
 
-import com.kickdrum.internal.sprout.entity.State;
 import org.springframework.stereotype.Service;
+
+import com.kickdrum.internal.sprout.entity.State;
 
 @Service
 public interface StateService {

@@ -1,9 +1,9 @@
 package com.kickdrum.internal.sprout.builder;
 
+import java.util.List;
+
 import com.kickdrum.internal.sprout.entity.Operation;
 import com.kickdrum.internal.sprout.entity.State;
-
-import java.util.List;
 
 public class StateBuilder {
     private Integer id;

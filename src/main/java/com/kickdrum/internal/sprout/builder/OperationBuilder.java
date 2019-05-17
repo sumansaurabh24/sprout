@@ -1,8 +1,8 @@
 package com.kickdrum.internal.sprout.builder;
 
-import com.kickdrum.internal.sprout.entity.Operation;
-
 import java.time.Instant;
+
+import com.kickdrum.internal.sprout.entity.Operation;
 
 public class OperationBuilder {
     private Integer stateId;

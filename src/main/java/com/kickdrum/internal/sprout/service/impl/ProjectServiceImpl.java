@@ -1,17 +1,15 @@
 package com.kickdrum.internal.sprout.service.impl;
 
-import com.kickdrum.internal.sprout.dao.ProjectDao;
-import com.kickdrum.internal.sprout.dao.ScriptDao;
-import com.kickdrum.internal.sprout.entity.Project;
-import com.kickdrum.internal.sprout.entity.Script;
-import com.kickdrum.internal.sprout.service.ProjectService;
-import com.kickdrum.internal.sprout.service.ScriptService;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Set;
+import com.kickdrum.internal.sprout.dao.ProjectDao;
+import com.kickdrum.internal.sprout.entity.Project;
+import com.kickdrum.internal.sprout.service.ProjectService;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j

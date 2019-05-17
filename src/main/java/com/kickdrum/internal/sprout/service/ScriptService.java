@@ -1,9 +1,10 @@
 package com.kickdrum.internal.sprout.service;
 
-import com.kickdrum.internal.sprout.entity.Script;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.kickdrum.internal.sprout.entity.Script;
 
 @Service
 public interface ScriptService {

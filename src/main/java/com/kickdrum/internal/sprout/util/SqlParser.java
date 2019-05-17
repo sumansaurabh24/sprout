@@ -1,22 +1,24 @@
 package com.kickdrum.internal.sprout.util;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.kickdrum.internal.sprout.builder.OperationBuilder;
 import com.kickdrum.internal.sprout.builder.StateBuilder;
 import com.kickdrum.internal.sprout.entity.Operation;
 import com.kickdrum.internal.sprout.entity.State;
 import com.kickdrum.internal.sprout.enums.StateOperation;
+
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
-import org.springframework.stereotype.Component;
-
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Component
 public class SqlParser {
