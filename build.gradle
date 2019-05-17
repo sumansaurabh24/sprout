@@ -31,6 +31,8 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
     compile group: 'net.sourceforge.nekohtml', name: 'nekohtml', version: '1.9.21'
     compile group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
+    compile group: 'com.github.jsqlparser', name: 'jsqlparser', version: '2.0'
+    compile group: 'net.minidev', name: 'json-smart', version: '2.3'
     compile 'mysql:mysql-connector-java'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
