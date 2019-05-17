@@ -2,6 +2,12 @@ package com.kickdrum.internal.sprout.service.impl;
 
 import java.util.List;
 
+import com.kickdrum.internal.sprout.entity.Operation;
+import com.kickdrum.internal.sprout.entity.State;
+import com.kickdrum.internal.sprout.model.StateOperationWrapper;
+import com.kickdrum.internal.sprout.service.OperationService;
+import com.kickdrum.internal.sprout.service.StateService;
+import com.kickdrum.internal.sprout.util.SqlParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +24,15 @@ public class ScriptServiceImpl implements ScriptService {
     @Autowired
     private ScriptDao scriptDao;
 
+    @Autowired
+    private SqlParser sqlParser;
+
+    @Autowired
+    private StateService stateService;
+
+    @Autowired
+    private OperationService operationService;
+
     @Override
     public Script findById(Long id) {
         return scriptDao.findById(id).orElse(null);
@@ -31,5 +46,40 @@ public class ScriptServiceImpl implements ScriptService {
     @Override
     public List<Script> findAll() {
         return scriptDao.findAll();
+    }
+
+    @Override
+    public boolean process(Script script) {
+        //validate the script
+        boolean validated = sqlParser.validateScript(script.getScriptData());
+        if(!validated){
+            return validated;
+        }
+
+        //persist the script
+        save(script);
+
+        //persist state and operation
+        saveStateAndOperation(script);
+
+        return true;
+    }
+
+    private void saveStateAndOperation(Script script){
+        //set database.schema name
+        sqlParser.setSchema("test");
+        //set user id as modifier
+        sqlParser.setModifier(2);
+
+        List<StateOperationWrapper> stateOperationWrappers = sqlParser.parse(script.getScriptData());
+        for(StateOperationWrapper wrapper : stateOperationWrappers){
+            State state = wrapper.getState();
+            state.setScriptId(script.getId());
+            state = stateService.save(state);
+            for (Operation operation : wrapper.getOperations()){
+                operation.setStateId(state.getId());
+                operationService.save(operation);
+            }
+        }
     }
 }

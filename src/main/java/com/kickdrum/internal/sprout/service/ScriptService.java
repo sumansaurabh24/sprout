@@ -12,4 +12,5 @@ public interface ScriptService {
     Script findById(Long id);
     Script save(Script scriptInput);
     List<Script> findAll();
+    boolean process(Script script);
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.kickdrum.internal.sprout.builder.StateBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -53,7 +54,7 @@ public class ServerServiceImpl implements ServerService {
 					tableSchema = (String) entry.getValue();
 				}
 			}
-			State s = new State(0, tableSchema, tableName, columns);
+			State s = new StateBuilder().setScriptId(0).setSchema(tableSchema).setTable(tableName).setColumns(columns).createState();
 			initStates.add(s);
 		}
 		stateDao.saveAll(initStates);

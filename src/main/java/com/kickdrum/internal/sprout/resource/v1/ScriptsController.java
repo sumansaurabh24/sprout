@@ -1,8 +1,9 @@
 package com.kickdrum.internal.sprout.resource.v1;
 
-import java.io.IOException;
-import java.util.List;
-
+import com.kickdrum.internal.sprout.entity.Project;
+import com.kickdrum.internal.sprout.entity.Script;
+import com.kickdrum.internal.sprout.service.ProjectService;
+import com.kickdrum.internal.sprout.service.ScriptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,10 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.kickdrum.internal.sprout.entity.Project;
-import com.kickdrum.internal.sprout.entity.Script;
-import com.kickdrum.internal.sprout.service.ProjectService;
-import com.kickdrum.internal.sprout.service.ScriptService;
+import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequestMapping("/scripts")
@@ -38,16 +37,16 @@ public class ScriptsController {
 
     @PostMapping(value = "/save", consumes = {"multipart/form-data"})
     public String saveScript(@RequestParam MultipartFile file, Script script, Model model) {
-        // System.out.print(script);
-        boolean success = false;
-
+        boolean success = true;
         try {
             script.setScriptData(new String(file.getBytes()));
         } catch (IOException e) {
-            //TODO: throw proper exception
+            success = false;
         }
 
-        Script saveScript = scriptService.save(script);
+        if(success){
+            success = scriptService.process(script);
+        }
 
         model.addAttribute("success", success);
         return "add-script";

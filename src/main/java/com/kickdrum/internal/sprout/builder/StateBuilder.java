@@ -1,22 +1,13 @@
 package com.kickdrum.internal.sprout.builder;
 
-import java.util.List;
-
-import com.kickdrum.internal.sprout.entity.Operation;
 import com.kickdrum.internal.sprout.entity.State;
 
 public class StateBuilder {
-    private Integer id;
     private Integer scriptId;
     private String schema;
     private String table;
     private String columns;
-    private List<Operation> operations;
-
-    public StateBuilder setId(Integer id) {
-        this.id = id;
-        return this;
-    }
+    private Integer id;
 
     public StateBuilder setScriptId(Integer scriptId) {
         this.scriptId = scriptId;
@@ -38,12 +29,12 @@ public class StateBuilder {
         return this;
     }
 
-    public StateBuilder setOperations(List<Operation> operations) {
-        this.operations = operations;
+    public StateBuilder setId(Integer id) {
+        this.id = id;
         return this;
     }
 
-    public State createTableState() {
-        return new State(id, scriptId, schema, table, columns, operations);
+    public State createState() {
+        return new State(scriptId, schema, table, columns);
     }
 }

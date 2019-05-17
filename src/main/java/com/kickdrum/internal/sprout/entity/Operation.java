@@ -1,12 +1,10 @@
 package com.kickdrum.internal.sprout.entity;
 
-import java.time.Instant;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import java.time.Instant;
 
 @Entity
 public class Operation {
@@ -15,24 +13,22 @@ public class Operation {
     private Integer id;
 
     private String operation;
-    private String affectedColumns;
+    private String affectedColumn;
     private Integer modifiedBy;
     private Instant modifiedAt;
-
-    @ManyToOne()
-    private State state;
+    private Integer stateId;
 
     public Operation() {
     }
 
-    public Operation(Integer tableStateId, String operation, String affectedColumns, Integer modifiedBy, Instant modifiedAt) {
-//        this.tableStateId = tableStateId;
+    public Operation(Integer id, String operation, String affectedColumn, Integer modifiedBy, Instant modifiedAt, Integer stateId) {
+        this.id = id;
         this.operation = operation;
-        this.affectedColumns = affectedColumns;
+        this.affectedColumn = affectedColumn;
         this.modifiedBy = modifiedBy;
         this.modifiedAt = modifiedAt;
+        this.stateId = stateId;
     }
-
 
     public Integer getId() {
         return id;
@@ -50,12 +46,12 @@ public class Operation {
         this.operation = operation;
     }
 
-    public String getAffectedColumns() {
-        return affectedColumns;
+    public String getAffectedColumn() {
+        return affectedColumn;
     }
 
-    public void setAffectedColumns(String affectedColumns) {
-        this.affectedColumns = affectedColumns;
+    public void setAffectedColumn(String affectedColumn) {
+        this.affectedColumn = affectedColumn;
     }
 
     public Integer getModifiedBy() {
@@ -74,11 +70,11 @@ public class Operation {
         this.modifiedAt = modifiedAt;
     }
 
-    public State getState() {
-        return state;
+    public Integer getStateId() {
+        return stateId;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setStateId(Integer stateId) {
+        this.stateId = stateId;
     }
 }

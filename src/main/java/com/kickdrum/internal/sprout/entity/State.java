@@ -1,102 +1,82 @@
 package com.kickdrum.internal.sprout.entity;
 
-import java.io.Serializable;
+import javax.persistence.*;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-
 @Entity
-public class State implements Serializable {
+public class State {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-	private Integer scriptId;
-	@Column(name = "schema_name")
-	private String schema;
-	@Column(name = "table_name")
-	private String table;
-	@Column(name = "column_list")
-	private String columns;
+    private Integer scriptId;
 
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "table_state_id", referencedColumnName = "id")
-	private List<Operation> operations;
+    @Column(name = "schema_name")
+    private String schema;
 
-	public State() {
-	}
+    @Column(name = "table_name")
+    private String table;
 
-	public State(Integer scriptId, String schema, String table, String columns) {
-		this.scriptId = scriptId;
-		this.schema = schema;
-		this.table = table;
-		this.columns = columns;
-	}
+    @Column(name = "column_list")
+    private String columns;
 
-	public State(Integer id, Integer scriptId, String schema, String table, String columns,
-			List<Operation> operations) {
-		this.id = id;
-		this.scriptId = scriptId;
-		this.schema = schema;
-		this.table = table;
-		this.columns = columns;
-		this.operations = operations;
-	}
+    public State() {
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public State(Integer scriptId, String schema, String table, String columns) {
+        this.scriptId = scriptId;
+        this.schema = schema;
+        this.table = table;
+        this.columns = columns;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public State(Integer id, Integer scriptId, String schema, String table, String columns
+    ) {
+        this.id = id;
+        this.scriptId = scriptId;
+        this.schema = schema;
+        this.table = table;
+        this.columns = columns;
+    }
 
-	public Integer getScriptId() {
-		return scriptId;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setScriptId(Integer scriptId) {
-		this.scriptId = scriptId;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getSchema() {
-		return schema;
-	}
+    public Integer getScriptId() {
+        return scriptId;
+    }
 
-	public void setSchema(String schema) {
-		this.schema = schema;
-	}
+    public void setScriptId(Integer scriptId) {
+        this.scriptId = scriptId;
+    }
 
-	public String getTable() {
-		return table;
-	}
+    public String getSchema() {
+        return schema;
+    }
 
-	public void setTable(String table) {
-		this.table = table;
-	}
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
 
-	public String getColumns() {
-		return columns;
-	}
+    public String getTable() {
+        return table;
+    }
 
-	public void setColumns(String columns) {
-		this.columns = columns;
-	}
+    public void setTable(String table) {
+        this.table = table;
+    }
 
-	public List<Operation> getOperations() {
-		return operations;
-	}
+    public String getColumns() {
+        return columns;
+    }
 
-	public void setOperations(List<Operation> operations) {
-		this.operations = operations;
-	}
+    public void setColumns(String columns) {
+        this.columns = columns;
+    }
 }

@@ -1,18 +1,19 @@
 package com.kickdrum.internal.sprout.builder;
 
-import java.time.Instant;
-
 import com.kickdrum.internal.sprout.entity.Operation;
 
+import java.time.Instant;
+
 public class OperationBuilder {
-    private Integer stateId;
+    private Integer id;
     private String operation;
-    private String affectedColumns;
+    private String affectedColumn;
     private Integer modifiedBy;
     private Instant modifiedAt;
+    private Integer stateId;
 
-    public OperationBuilder setStateId(Integer stateId) {
-        this.stateId = stateId;
+    public OperationBuilder setId(Integer id) {
+        this.id = id;
         return this;
     }
 
@@ -21,8 +22,8 @@ public class OperationBuilder {
         return this;
     }
 
-    public OperationBuilder setAffectedColumns(String affectedColumns) {
-        this.affectedColumns = affectedColumns;
+    public OperationBuilder setAffectedColumn(String affectedColumn) {
+        this.affectedColumn = affectedColumn;
         return this;
     }
 
@@ -36,7 +37,12 @@ public class OperationBuilder {
         return this;
     }
 
-    public Operation createTableOperation() {
-        return new Operation(stateId, operation, affectedColumns, modifiedBy, modifiedAt);
+    public OperationBuilder setStateId(Integer stateId) {
+        this.stateId = stateId;
+        return this;
+    }
+
+    public Operation createOperation() {
+        return new Operation(id, operation, affectedColumn, modifiedBy, modifiedAt, stateId);
     }
 }
