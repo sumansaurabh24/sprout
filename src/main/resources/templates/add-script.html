@@ -1,4 +1,4 @@
-<html lang="en"><head>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"><head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -33,57 +33,50 @@
     </div>
 </nav>
 <div class="container">
+    <form method="post" action="/scripts/save" enctype="multipart/form-data">
+        <div class="form-group">
+            <label>Title</label>
+            <input type="text" class="form-control" name="title" placeholder="Script Title">
+        </div>sc
 
-    <div class="panel panel-default">
-        <div class="panel-heading">Add Scripts</div>
-            <div class="panel-body">
-                <form method="post" action="/scripts/save" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label>Title</label>
-                        <input type="text" class="form-control" name="title" placeholder="Script Title">
-                    </div>sc
+        <div class="form-group">
+            <label>Jira Id</label>
+            <select name="jiraId" class="form-control">
+                <option>Select Jira Id</option>
+                <option scriptData="1">Jira-1</option>
+                <option scriptData="2">Jira-2</option>
+                <option scriptData="3">Jira-3</option>
+            </select>
+        </div>
 
-                    <div class="form-group">
-                        <label>Jira Id</label>
-                        <select name="jiraId" class="form-control">
-                            <option>Select Jira Id</option>
-                            <option scriptData="1">Jira-1</option>
-                            <option scriptData="2">Jira-2</option>
-                            <option scriptData="3">Jira-3</option>
-                        </select>
-                    </div>
+        <div>
+            <label> Script File</label>
+            <input type="file" name="file" size="50"/>
+        </div>
 
-                    <div>
-                        <label> Script File</label>
-                        <input type="file" name="file" size="50"/>
-                    </div>
+        <div>
+            &nbsp;
+        </div>
+        <div class="form-group">
+            <label>Sprint</label>
+            <select name="sprint" class="form-control">
+                <option>Select Sprint Name</option>
+                <option th:each="sprint: ${sprints}" th:text="${sprint.name}"></option>
 
-                    <div>
-                        &nbsp;
-                    </div>
-                    <div class="form-group">
-                        <label>Sprint</label>
-                        <select name="sprint" class="form-control">
-                            <option>Select Sprint Name</option>
-                            <option scriptData="1">Sprint-1</option>
-                            <option scriptData="2">Sprint-2</option>
-                            <option scriptData="3">Sprint-3</option>
-                        </select>
-                    </div>
+            </select>
+        </div>
 
 
-                    <div class="form-group">
-                        <label>Projects</label>
-                        <select name="projectId" class="form-control">
-                            <option>Select a project</option>
-                            <option th:each="project: ${projects}" scriptData="${project.id}" th:text="${project.name}"></option>
-                        </select>
-                    </div>
-                    <input type="hidden" name="userId" value="1">
-                    <button type="submit" class="btn btn-default">Submit</button>
-                </form>
-            </div>
-    </div>
+        <div class="form-group">
+            <label>Projects</label>
+            <select name="projectId" class="form-control">
+                <option>Select a project</option>
+                <option th:each="project: ${projects}" scriptData="${project.id}" th:text="${project.name}"></option>
+            </select>
+        </div>
+        <input type="hidden" name="userId" value="1">
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
     <hr>
 
     <footer>
