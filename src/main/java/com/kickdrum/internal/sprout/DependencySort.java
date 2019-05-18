@@ -1,11 +1,10 @@
 package com.kickdrum.internal.sprout;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
 public class DependencySort {
-	Stack<Node> stack;
+	public Stack<Node> stack;
 
 	public DependencySort() {
 		stack = new Stack<>();

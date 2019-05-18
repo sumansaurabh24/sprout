@@ -1,16 +1,19 @@
 package com.kickdrum.internal.sprout.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.kickdrum.internal.sprout.DependencySort;
 import com.kickdrum.internal.sprout.Node;
 import com.kickdrum.internal.sprout.dao.ScriptDao;
 import com.kickdrum.internal.sprout.entity.Operation;
@@ -83,13 +86,15 @@ public class ScriptServiceImpl implements ScriptService {
 		listSequence();
 	}
 
-	private void listSequence() {
+	@Override
+	public List<String> listSequence() {
 		Map<Integer, Node> nodesMap = new HashMap<Integer, Node>();
 		Node zerothNode = new Node(0);
 		List<Script> scripts = findAll();
 		for (Script script : scripts) {
 			Integer id = script.getId();
 			Node sourceNode = nodesMap.get(id) == null ? new Node(id) : nodesMap.get(id);
+			nodesMap.put(id, sourceNode);
 			String dependentScripts = script.getDependentScripts();
 			if (dependentScripts == null || dependentScripts.equals("")) {
 				zerothNode.addneighbours(sourceNode);
@@ -98,10 +103,18 @@ public class ScriptServiceImpl implements ScriptService {
 					Integer dId = Integer.parseInt(s);
 					Node dependentNode = nodesMap.get(dId) == null ? new Node(dId) : nodesMap.get(dId);
 					dependentNode.addneighbours(sourceNode);
+					nodesMap.put(dId, dependentNode);
 				}
 			}
 		}
-
+		DependencySort topological = new DependencySort();
+		topological.toplogicalSort(zerothNode);
+		Stack<Node> resultStack = topological.stack;
+		List<String> sequence = new ArrayList<String>();
+		while (resultStack.empty() == false) {
+			sequence.add(resultStack.pop().toString());
+		}
+		return sequence;
 	}
 
 	private void saveStateAndOperation(Script script, List<Statement> statements) {

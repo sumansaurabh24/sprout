@@ -19,4 +19,6 @@ public interface ScriptService {
 	List<Script> findAll();
 
 	void process(Script script) throws JSQLParserException, SproutException;
+
+	List<String> listSequence();
 }
