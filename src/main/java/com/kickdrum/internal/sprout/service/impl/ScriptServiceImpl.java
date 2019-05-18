@@ -119,7 +119,7 @@ public class ScriptServiceImpl implements ScriptService {
 			} else if (statement instanceof Alter) {
 				List<AlterExpression> expressions = ((Alter) statement).getAlterExpressions();
 				String tableName = ((Alter) statement).getTable().getName();
-				checkIfTableExists(allStates, tableName);
+				dependentScripts.add(checkIfTableExists(allStates, tableName));
 				for (AlterExpression alterExpression : expressions) {
 					String operation = alterExpression.getOperation().name();
 					switch (operation) {
