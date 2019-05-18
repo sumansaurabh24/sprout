@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.kickdrum.internal.sprout.entity.Project;
 import com.kickdrum.internal.sprout.entity.Script;
+import com.kickdrum.internal.sprout.entity.Sprint;
 import com.kickdrum.internal.sprout.service.ProjectService;
 import com.kickdrum.internal.sprout.service.ScriptService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ public class ScriptsController {
 	public String addScriptsPage(Model model) {
 		List<Project> projects = projectService.findAll();
 		model.addAttribute("projects", projects);
+		List<Sprint> sprints = projectService.findAllSprints();
+		model.addAttribute("sprints",sprints);
 		return "add-script";
 	}
 
