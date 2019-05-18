@@ -1,7 +1,9 @@
 package com.kickdrum.internal.sprout.service.impl;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -9,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.kickdrum.internal.sprout.Node;
 import com.kickdrum.internal.sprout.dao.ScriptDao;
 import com.kickdrum.internal.sprout.entity.Operation;
 import com.kickdrum.internal.sprout.entity.Script;
@@ -76,6 +79,29 @@ public class ScriptServiceImpl implements ScriptService {
 		save(script);
 		// persist state and operation
 		saveStateAndOperation(script, statements);
+
+		listSequence();
+	}
+
+	private void listSequence() {
+		Map<Integer, Node> nodesMap = new HashMap<Integer, Node>();
+		Node zerothNode = new Node(0);
+		List<Script> scripts = findAll();
+		for (Script script : scripts) {
+			Integer id = script.getId();
+			Node sourceNode = nodesMap.get(id) == null ? new Node(id) : nodesMap.get(id);
+			String dependentScripts = script.getDependentScripts();
+			if (dependentScripts == null || dependentScripts.equals("")) {
+				zerothNode.addneighbours(sourceNode);
+			} else {
+				for (String s : dependentScripts.split(",")) {
+					Integer dId = Integer.parseInt(s);
+					Node dependentNode = nodesMap.get(dId) == null ? new Node(dId) : nodesMap.get(dId);
+					dependentNode.addneighbours(sourceNode);
+				}
+			}
+		}
+
 	}
 
 	private void saveStateAndOperation(Script script, List<Statement> statements) {
@@ -139,8 +165,9 @@ public class ScriptServiceImpl implements ScriptService {
 				}
 
 			}
-			StateOperationWrapper wrapper = sqlParser.getState(statement);
-			allStates.add(wrapper.getState());
+			State state = sqlParser.getState(statement).getState();
+			state.setColumns("");
+			allStates.add(state);
 		}
 		return dependentScripts;
 	}
@@ -169,10 +196,11 @@ public class ScriptServiceImpl implements ScriptService {
 
 	private void checkIfColumnNotExists(List<State> allStates, AlterExpression alterExpression, String tableName)
 			throws SproutException {
-		if (allStates.stream()
+		List<State> filtered = allStates.stream()
 				.filter(state -> state.getTable().equalsIgnoreCase(tableName)
 						&& state.getColumns().contains(alterExpression.getColDataTypeList().get(0).getColumnName()))
-				.collect(Collectors.toList()).size() > 0) {
+				.collect(Collectors.toList());
+		if (filtered.size() > 0) {
 			throw new SproutException("Column " + tableName + "."
 					+ alterExpression.getColDataTypeList().get(0).getColumnName() + " exists already");
 		}
