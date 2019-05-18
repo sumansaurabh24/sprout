@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kickdrum.internal.sprout.entity.Project;
 import com.kickdrum.internal.sprout.entity.Script;
+import com.kickdrum.internal.sprout.exception.SproutException;
 import com.kickdrum.internal.sprout.service.ProjectService;
 import com.kickdrum.internal.sprout.service.ScriptService;
 
@@ -48,6 +49,10 @@ public class ScriptsController {
 		try {
 			scriptService.process(script);
 		} catch (JSQLParserException e) {
+			e.printStackTrace();
+			success = false;
+		} catch (SproutException e) {
+			e.printStackTrace();
 			success = false;
 		}
 
