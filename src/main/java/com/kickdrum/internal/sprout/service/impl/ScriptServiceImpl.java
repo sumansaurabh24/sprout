@@ -170,7 +170,7 @@ public class ScriptServiceImpl implements ScriptService {
 						checkIfColumnNotExists(allStates, alterExpression, tableName);
 						break;
 					case "DROP":
-						dependentScripts.add(checkIfColumnExistsAlready(allStates, alterExpression, tableName));
+						dependentScripts.add(checkIfColumnExistsAlreadyForDrop(allStates, alterExpression, tableName));
 						break;
 					default:
 						dependentScripts.add(checkIfColumnExistsAlready(allStates, alterExpression, tableName));
@@ -190,6 +190,17 @@ public class ScriptServiceImpl implements ScriptService {
 				.collect(Collectors.toList());
 		if (filtered.size() == 0) {
 			throw new SproutException("Table " + tableName + " does not exist");
+		}
+		return filtered.get(0).getScriptId();
+	}
+
+	private Integer checkIfColumnExistsAlreadyForDrop(List<State> allStates, AlterExpression alterExpression,
+			String tableName) throws SproutException {
+		List<State> filtered = allStates.stream().filter(state -> state.getTable().equalsIgnoreCase(tableName)
+				&& state.getColumns().contains(alterExpression.getColumnName())).collect(Collectors.toList());
+		if (filtered.size() == 0) {
+			throw new SproutException(
+					"Column " + tableName + "." + alterExpression.getColumnName() + " doesn't exist already");
 		}
 		return filtered.get(0).getScriptId();
 	}

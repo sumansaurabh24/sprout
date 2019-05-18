@@ -13,25 +13,23 @@ import com.kickdrum.internal.sprout.model.StateOperationWrapper;
 
 public class AppUtil {
 
-    public static StateOperationWrapper modifyStateColumnList(StateOperationWrapper wrapper, State existingState){
-        //pull state from db
-        String existingColumns = existingState.getColumns();
-        List<String> columnList = new LinkedList<>(Arrays.asList(existingColumns.split(",")));
+	public static StateOperationWrapper modifyStateColumnList(StateOperationWrapper wrapper, State existingState) {
+		// pull state from db
+		String existingColumns = existingState.getColumns();
+		List<String> columnList = new LinkedList<>(Arrays.asList(existingColumns.split(",")));
 
-        for(Operation operation : wrapper.getOperations()){
-            columnList.removeIf(op ->
-                    (columnList.contains(operation.getAffectedColumn())
-                            && operation.getOperation().equalsIgnoreCase(StateOperation.DROP.name()))
-            );
+		for (Operation operation : wrapper.getOperations()) {
+			columnList.removeIf(op -> (op.equalsIgnoreCase(operation.getAffectedColumn())
+					&& operation.getOperation().equalsIgnoreCase(StateOperation.DROP.name())));
 
-            if(operation.getOperation().equalsIgnoreCase(StateOperation.ADD.name())){
-                columnList.add(operation.getAffectedColumn());
-            }
-        }
-        String modifiedColumn = StringUtils.join(columnList, ",");
+			if (operation.getOperation().equalsIgnoreCase(StateOperation.ADD.name())) {
+				columnList.add(operation.getAffectedColumn());
+			}
+		}
+		String modifiedColumn = StringUtils.join(columnList, ",");
 
-        existingState.setColumns(modifiedColumn);
-        wrapper.setState(existingState);
-        return wrapper;
-    }
+		existingState.setColumns(modifiedColumn);
+		wrapper.setState(existingState);
+		return wrapper;
+	}
 }
