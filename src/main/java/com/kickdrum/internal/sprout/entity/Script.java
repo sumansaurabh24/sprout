@@ -8,70 +8,86 @@ import javax.persistence.Id;
 @Entity
 public class Script {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    private String title;
-    private String jiraId;
-    private String scriptData;
-    private String sprint;
-    private String projectId;
-    private Integer userId;
+	private String title;
+	private String jiraId;
+	private String scriptData;
+	private String sprint;
+	private String projectId;
+	private Integer userId;
+	private String dependentScripts;
 
-    public Integer getId() {
-        return id;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public String getTitle() {
-        return title;
-    }
+	public String getTitle() {
+		return title;
+	}
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    public String getJiraId() {
-        return jiraId;
-    }
+	public String getJiraId() {
+		return jiraId;
+	}
 
-    public void setJiraId(String jiraId) {
-        this.jiraId = jiraId;
-    }
+	public void setJiraId(String jiraId) {
+		this.jiraId = jiraId;
+	}
 
-    public String getScriptData() {
-        return scriptData;
-    }
+	public String getScriptData() {
+		return scriptData;
+	}
 
-    public void setScriptData(String scriptData) {
-        this.scriptData = scriptData;
-    }
+	public void setScriptData(String scriptData) {
+		this.scriptData = scriptData;
+	}
 
-    public String getSprint() {
-        return sprint;
-    }
+	public String getSprint() {
+		return sprint;
+	}
 
-    public void setSprint(String sprint) {
-        this.sprint = sprint;
-    }
+	public void setSprint(String sprint) {
+		this.sprint = sprint;
+	}
 
-    public String getProjectId() {
-        return projectId;
-    }
+	public String getProjectId() {
+		return projectId;
+	}
 
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
-    }
+	public void setProjectId(String projectId) {
+		this.projectId = projectId;
+	}
 
-    public Integer getUserId() {
-        return userId;
-    }
+	public Integer getUserId() {
+		return userId;
+	}
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+	/**
+	 * @return the dependentScripts
+	 */
+	public String getDependentScripts() {
+		return dependentScripts;
+	}
+
+	/**
+	 * @param dependentScripts the dependentScripts to set
+	 */
+	public void setDependentScripts(String dependentScripts) {
+		this.dependentScripts = dependentScripts;
+	}
+
 }

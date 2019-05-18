@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -69,6 +70,8 @@ public class ScriptServiceImpl implements ScriptService {
 		for (Integer integer : dependencies) {
 			System.out.println("Dependent on " + integer);
 		}
+		String csd = StringUtils.join(dependencies, ",");
+		script.setDependentScripts(csd);
 		// persist the script
 		save(script);
 		// persist state and operation
@@ -93,6 +96,7 @@ public class ScriptServiceImpl implements ScriptService {
 				wrapper = AppUtil.modifyStateColumnList(wrapper, existingState);
 				state = wrapper.getState();
 			}
+			state.setScriptId(script.getId());
 			state = stateService.save(state);
 			saveOperations(wrapper.getOperations(), state.getId(), script.getId());
 		}
