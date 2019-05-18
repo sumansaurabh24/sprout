@@ -38,6 +38,7 @@
     </div>
 </nav>
 <div class="container-fluid">
+
     <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar" th:each="state: ${states}">
@@ -45,6 +46,7 @@
             </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <th:block th:if="${state != null}">
             <div class="container">
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -81,6 +83,7 @@
                     </div>
                 </div>
             </div>
+            </th:block>
         </div>
     </div>
 </div>

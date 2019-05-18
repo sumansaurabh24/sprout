@@ -25,22 +25,24 @@ public class SchemaController {
     private OperationService operationService;
 
     @GetMapping("/version")
-    public String displaySchemaVersion(@RequestParam(value = "id", required = false) Integer stateId, Model model){
+    public String displaySchemaVersion(@RequestParam(value = "id", required = false) Integer stateId, Model model) {
         List<State> states = stateService.findAll();
-        List<Operation> operations = operationService.findByStateIdAndGroupedByScriptId(stateId);
+        model.addAttribute("states", states);
 
-        List<List<Operation>> listOfOperationList = new ArrayList<>();
-        for(Operation operation: operations) {
-            listOfOperationList.add(operationService.findByStateIdAndScriptId(operation.getStateId(), operation.getScriptId()));
+        if (stateId == null) {
+            return "schema-version";
         }
 
-        if(operations != null && operations.size() != 0){
+        List<Operation> operations = operationService.findByStateIdAndGroupedByScriptId(stateId);
+        List<List<Operation>> listOfOperationList = new ArrayList<>();
+        for (Operation operation : operations) {
+            listOfOperationList.add(operationService.findByStateIdAndScriptId(operation.getStateId(), operation.getScriptId()));
+        }
+        if (operations != null && operations.size() != 0) {
             State state = stateService.findById(stateId);
             model.addAttribute("state", state);
             model.addAttribute("listOfOperationList", listOfOperationList);
         }
-
-        model.addAttribute("states", states);
         return "schema-version";
     }
 }
