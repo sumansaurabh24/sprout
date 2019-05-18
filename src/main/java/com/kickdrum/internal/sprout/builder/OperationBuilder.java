@@ -6,14 +6,25 @@ import java.time.Instant;
 
 public class OperationBuilder {
     private Integer id;
+    private Integer stateId;
+    private Integer scriptId;
     private String operation;
     private String affectedColumn;
     private Integer modifiedBy;
     private Instant modifiedAt;
-    private Integer stateId;
 
     public OperationBuilder setId(Integer id) {
         this.id = id;
+        return this;
+    }
+
+    public OperationBuilder setStateId(Integer stateId) {
+        this.stateId = stateId;
+        return this;
+    }
+
+    public OperationBuilder setScriptId(Integer scriptId) {
+        this.scriptId = scriptId;
         return this;
     }
 
@@ -37,12 +48,7 @@ public class OperationBuilder {
         return this;
     }
 
-    public OperationBuilder setStateId(Integer stateId) {
-        this.stateId = stateId;
-        return this;
-    }
-
     public Operation createOperation() {
-        return new Operation(id, operation, affectedColumn, modifiedBy, modifiedAt, stateId);
+        return new Operation(id, stateId, scriptId, operation, affectedColumn, modifiedBy, modifiedAt);
     }
 }

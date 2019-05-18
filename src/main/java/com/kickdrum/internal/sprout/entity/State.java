@@ -10,8 +10,6 @@ public class State {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer scriptId;
-
     @Column(name = "schema_name")
     private String schema;
 
@@ -24,17 +22,15 @@ public class State {
     public State() {
     }
 
-    public State(Integer scriptId, String schema, String table, String columns) {
-        this.scriptId = scriptId;
+    public State(String schema, String table, String columns) {
         this.schema = schema;
         this.table = table;
         this.columns = columns;
     }
 
-    public State(Integer id, Integer scriptId, String schema, String table, String columns
+    public State(Integer id, String schema, String table, String columns
     ) {
         this.id = id;
-        this.scriptId = scriptId;
         this.schema = schema;
         this.table = table;
         this.columns = columns;
@@ -46,14 +42,6 @@ public class State {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getScriptId() {
-        return scriptId;
-    }
-
-    public void setScriptId(Integer scriptId) {
-        this.scriptId = scriptId;
     }
 
     public String getSchema() {

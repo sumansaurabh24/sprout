@@ -8,26 +8,28 @@ import java.time.Instant;
 
 @Entity
 public class Operation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
+    private Integer stateId;
+    private Integer scriptId;
     private String operation;
     private String affectedColumn;
     private Integer modifiedBy;
     private Instant modifiedAt;
-    private Integer stateId;
 
     public Operation() {
     }
 
-    public Operation(Integer id, String operation, String affectedColumn, Integer modifiedBy, Instant modifiedAt, Integer stateId) {
+    public Operation(Integer id, Integer stateId, Integer scriptId, String operation, String affectedColumn, Integer modifiedBy, Instant modifiedAt) {
         this.id = id;
+        this.stateId = stateId;
+        this.scriptId = scriptId;
         this.operation = operation;
         this.affectedColumn = affectedColumn;
         this.modifiedBy = modifiedBy;
         this.modifiedAt = modifiedAt;
-        this.stateId = stateId;
     }
 
     public Integer getId() {
@@ -36,6 +38,22 @@ public class Operation {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getStateId() {
+        return stateId;
+    }
+
+    public void setStateId(Integer stateId) {
+        this.stateId = stateId;
+    }
+
+    public Integer getScriptId() {
+        return scriptId;
+    }
+
+    public void setScriptId(Integer scriptId) {
+        this.scriptId = scriptId;
     }
 
     public String getOperation() {
@@ -68,13 +86,5 @@ public class Operation {
 
     public void setModifiedAt(Instant modifiedAt) {
         this.modifiedAt = modifiedAt;
-    }
-
-    public Integer getStateId() {
-        return stateId;
-    }
-
-    public void setStateId(Integer stateId) {
-        this.stateId = stateId;
     }
 }

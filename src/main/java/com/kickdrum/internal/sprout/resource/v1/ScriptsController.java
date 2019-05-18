@@ -49,7 +49,7 @@ public class ScriptsController {
         }
 
         model.addAttribute("success", success);
-        return "add-script";
+        return "redirect:/scripts/add";
     }
 
     

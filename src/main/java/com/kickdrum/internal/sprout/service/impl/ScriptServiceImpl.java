@@ -1,21 +1,19 @@
 package com.kickdrum.internal.sprout.service.impl;
 
-import java.util.List;
-
+import com.kickdrum.internal.sprout.dao.ScriptDao;
 import com.kickdrum.internal.sprout.entity.Operation;
+import com.kickdrum.internal.sprout.entity.Script;
 import com.kickdrum.internal.sprout.entity.State;
 import com.kickdrum.internal.sprout.model.StateOperationWrapper;
 import com.kickdrum.internal.sprout.service.OperationService;
+import com.kickdrum.internal.sprout.service.ScriptService;
 import com.kickdrum.internal.sprout.service.StateService;
 import com.kickdrum.internal.sprout.util.SqlParser;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.kickdrum.internal.sprout.dao.ScriptDao;
-import com.kickdrum.internal.sprout.entity.Script;
-import com.kickdrum.internal.sprout.service.ScriptService;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -74,10 +72,10 @@ public class ScriptServiceImpl implements ScriptService {
         List<StateOperationWrapper> stateOperationWrappers = sqlParser.parse(script.getScriptData());
         for(StateOperationWrapper wrapper : stateOperationWrappers){
             State state = wrapper.getState();
-            state.setScriptId(script.getId());
             state = stateService.save(state);
             for (Operation operation : wrapper.getOperations()){
                 operation.setStateId(state.getId());
+                operation.setScriptId(script.getId());
                 operationService.save(operation);
             }
         }

@@ -3,16 +3,10 @@ package com.kickdrum.internal.sprout.builder;
 import com.kickdrum.internal.sprout.entity.State;
 
 public class StateBuilder {
-    private Integer scriptId;
     private String schema;
     private String table;
     private String columns;
     private Integer id;
-
-    public StateBuilder setScriptId(Integer scriptId) {
-        this.scriptId = scriptId;
-        return this;
-    }
 
     public StateBuilder setSchema(String schema) {
         this.schema = schema;
@@ -35,6 +29,6 @@ public class StateBuilder {
     }
 
     public State createState() {
-        return new State(scriptId, schema, table, columns);
+        return new State(schema, table, columns);
     }
 }

@@ -54,7 +54,7 @@ public class ServerServiceImpl implements ServerService {
 					tableSchema = (String) entry.getValue();
 				}
 			}
-			State s = new StateBuilder().setScriptId(0).setSchema(tableSchema).setTable(tableName).setColumns(columns).createState();
+			State s = new StateBuilder().setSchema(tableSchema).setTable(tableName).setColumns(columns).createState();
 			initStates.add(s);
 		}
 		stateDao.saveAll(initStates);

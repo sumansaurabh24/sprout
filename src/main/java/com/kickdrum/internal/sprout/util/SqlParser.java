@@ -12,6 +12,8 @@ import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -24,6 +26,7 @@ public class SqlParser {
 
     private Integer modifier;
     private String schema;
+    private static final Logger logger = LoggerFactory.getLogger(SqlParser.class);
 
     public void setModifier(Integer modifier) {
         this.modifier = modifier;
@@ -60,7 +63,7 @@ public class SqlParser {
         try {
             statement = CCJSqlParserUtil.parse(query);
         } catch (JSQLParserException e) {
-            // TODO : throw proper exception
+            logger.error("Error while parsing the script: " + e.getMessage(), e);
             statement = null;
         }
         return statement;
