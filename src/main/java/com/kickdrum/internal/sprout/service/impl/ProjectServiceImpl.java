@@ -1,23 +1,25 @@
 package com.kickdrum.internal.sprout.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import com.kickdrum.internal.sprout.dao.ProjectDao;
 import com.kickdrum.internal.sprout.entity.Project;
+import com.kickdrum.internal.sprout.entity.Sprint;
 import com.kickdrum.internal.sprout.service.ProjectService;
 
 import lombok.extern.slf4j.Slf4j;
-import com.kickdrum.internal.sprout.entity.Sprint;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.*;
 
 @Component
 @Slf4j
