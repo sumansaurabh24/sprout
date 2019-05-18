@@ -72,8 +72,8 @@ public class ScriptServiceImpl implements ScriptService {
 	}
 
 	private void saveStateAndOperation(Script script, List<Statement> statements) {
-	    String schema = "test";
-	    Integer userId = 2;
+		String schema = "test";
+		Integer userId = 2;
 
 		// set database.schema name
 		sqlParser.setSchema(schema);
@@ -82,25 +82,25 @@ public class ScriptServiceImpl implements ScriptService {
 
 		List<StateOperationWrapper> stateOperationWrappers = sqlParser.parse(statements);
 		for (StateOperationWrapper wrapper : stateOperationWrappers) {
-		    State state = wrapper.getState();
-		    //check the operation
-            if(!state.getOperation().equals(StateOperation.ADD)) {
+			State state = wrapper.getState();
+			// check the operation
+			if (!state.getOperation().equals(StateOperation.ADD)) {
 				State existingState = stateService.findStateBySchemaAndTable(state.getSchema(), state.getTable());
 				wrapper = AppUtil.modifyStateColumnList(wrapper, existingState);
 				state = wrapper.getState();
-            }
+			}
 			state = stateService.save(state);
 			saveOperations(wrapper.getOperations(), state.getId(), script.getId());
 		}
 	}
 
-    private void saveOperations(List<Operation> operations, Integer stateId, Integer scriptId){
-        for (Operation operation : operations) {
-            operation.setStateId(stateId);
-            operation.setScriptId(scriptId);
-            operationService.save(operation);
-        }
-    }
+	private void saveOperations(List<Operation> operations, Integer stateId, Integer scriptId) {
+		for (Operation operation : operations) {
+			operation.setStateId(stateId);
+			operation.setScriptId(scriptId);
+			operationService.save(operation);
+		}
+	}
 
 	private void findDependencies(List<Statement> statements, List<State> allStates) throws SproutException {
 		for (Statement statement : statements) {
@@ -130,6 +130,8 @@ public class ScriptServiceImpl implements ScriptService {
 				}
 
 			}
+			StateOperationWrapper wrapper = sqlParser.getState(statement);
+			allStates.add(wrapper.getState());
 		}
 	}
 
