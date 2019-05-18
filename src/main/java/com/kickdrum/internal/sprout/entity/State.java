@@ -26,12 +26,6 @@ public class State {
     public State() {
     }
 
-    public State(String schema, String table, String columns) {
-        this.schema = schema;
-        this.table = table;
-        this.columns = columns;
-    }
-
     public State(Integer id, String schema, String table, String columns, StateOperation operation) {
         this.id = id;
         this.schema = schema;
