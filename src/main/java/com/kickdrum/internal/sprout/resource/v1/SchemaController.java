@@ -25,7 +25,7 @@ public class SchemaController {
     private OperationService operationService;
 
     @GetMapping("/version")
-    public String displaySchemaVersion(@RequestParam("id") Integer stateId, Model model){
+    public String displaySchemaVersion(@RequestParam(value = "id", required = false) Integer stateId, Model model){
         List<State> states = stateService.findAll();
         List<Operation> operations = operationService.findByStateIdAndGroupedByScriptId(stateId);
 
