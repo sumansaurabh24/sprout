@@ -80,7 +80,7 @@ public class SqlParser {
      * @param statement
      * @return
      */
-    private StateOperationWrapper getState(Statement statement) {
+    public StateOperationWrapper getState(Statement statement) {
 
         if (statement instanceof CreateTable) {
             return getStateForCreateTable((CreateTable) statement);
