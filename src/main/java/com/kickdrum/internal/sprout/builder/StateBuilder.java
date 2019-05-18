@@ -1,12 +1,14 @@
 package com.kickdrum.internal.sprout.builder;
 
 import com.kickdrum.internal.sprout.entity.State;
+import com.kickdrum.internal.sprout.enums.StateOperation;
 
 public class StateBuilder {
     private String schema;
     private String table;
     private String columns;
     private Integer id;
+    private StateOperation operation;
 
     public StateBuilder setSchema(String schema) {
         this.schema = schema;
@@ -25,6 +27,11 @@ public class StateBuilder {
 
     public StateBuilder setId(Integer id) {
         this.id = id;
+        return this;
+    }
+
+    public StateBuilder setOperation(StateOperation operation) {
+        this.operation = operation;
         return this;
     }
 

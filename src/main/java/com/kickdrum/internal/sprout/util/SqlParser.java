@@ -10,6 +10,8 @@ import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.alter.Alter;
+import net.sf.jsqlparser.statement.alter.AlterExpression;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
 import org.slf4j.Logger;
@@ -38,8 +40,9 @@ public class SqlParser {
 
     /**
      * Parse batch query string
+     *
      * @param query
-     * @return
+     * @return List<StateOperationWrapper>
      */
     public List<StateOperationWrapper> parse(String query) {
         //split the batch file
@@ -58,7 +61,7 @@ public class SqlParser {
      * @param query
      * @return
      */
-    public Statement getStatement(String query){
+    public Statement getStatement(String query) {
         Statement statement = null;
         try {
             statement = CCJSqlParserUtil.parse(query);
@@ -73,15 +76,15 @@ public class SqlParser {
      * Validate batch query string
      *
      * @param query
-     * @return
+     * @return boolean
      */
-    public boolean validateScript(String query){
+    public boolean validateScript(String query) {
         boolean flag = true;
         String[] queryList = query.split(";");
         List<String> queries = Arrays.asList(queryList);
         for (String queryStr : queries) {
             Statement statement = getStatement(queryStr);
-            if(statement == null){
+            if (statement == null) {
                 flag = false;
                 break;
             }
@@ -93,13 +96,15 @@ public class SqlParser {
      * Get {@link State} Object from string query
      *
      * @param query
-     * @return
+     * @return StateOperationWrapper
      */
     private StateOperationWrapper getState(String query) {
         Statement statement = getStatement(query);
 
         if (statement instanceof CreateTable) {
             return getStateForCreateTable((CreateTable) statement);
+        } else if (statement instanceof Alter) {
+            return getStateFromAlter((Alter) statement);
         }
 
         return null;
@@ -109,7 +114,7 @@ public class SqlParser {
      * Get State for create table query
      *
      * @param createTable
-     * @return
+     * @return StateOperationWrapper
      */
     private StateOperationWrapper getStateForCreateTable(CreateTable createTable) {
         List<ColumnDefinition> columnDefinitions = createTable.getColumnDefinitions();
@@ -132,7 +137,58 @@ public class SqlParser {
                 .setColumns(columns.toString())
                 .setSchema(schema)
                 .setTable(table.getName())
+                .setOperation(StateOperation.ADD)
                 .createState();
+
+        StateOperationWrapper stateOperationWrapper = new StateOperationWrapper();
+        stateOperationWrapper.setState(state);
+        stateOperationWrapper.setOperations(operations);
+        return stateOperationWrapper;
+    }
+
+    /**
+     * Get State for alter table query
+     *
+     * @param alter
+     * @return StateOperationWrapper
+     */
+    private StateOperationWrapper getStateFromAlter(Alter alter) {
+        String table = alter.getTable().getName();
+        List<AlterExpression> alterExpressions = alter.getAlterExpressions();
+        List<Operation> operations = new ArrayList<>();
+
+        //construct state
+        State state = new StateBuilder()
+                .setSchema(schema)
+                .setTable(table)
+                .setOperation(StateOperation.MODIFY)
+                .createState();
+
+
+        for (AlterExpression expression : alterExpressions) {
+            String op = expression.getOperation().name();
+            String column = null;
+
+            // get affected column name
+            if (StateOperation.ADD.name().equalsIgnoreCase(op)) {
+                List<AlterExpression.ColumnDataType> colDataTypeList = expression.getColDataTypeList();
+                for (AlterExpression.ColumnDataType columnDataType : colDataTypeList) {
+                    column = columnDataType.getColumnName();
+                }
+            } else {
+                column = expression.getColumnName();
+            }
+
+            //create operation object
+            Operation operation = new OperationBuilder()
+                    .setOperation(op)
+                    .setModifiedAt(Instant.now())
+                    .setAffectedColumn(column)
+                    .setModifiedBy(modifier)
+                    .createOperation();
+
+            operations.add(operation);
+        }
 
         StateOperationWrapper stateOperationWrapper = new StateOperationWrapper();
         stateOperationWrapper.setState(state);

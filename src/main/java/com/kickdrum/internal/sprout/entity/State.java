@@ -1,7 +1,8 @@
 package com.kickdrum.internal.sprout.entity;
 
+import com.kickdrum.internal.sprout.enums.StateOperation;
+
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 public class State {
@@ -19,6 +20,9 @@ public class State {
     @Column(name = "column_list")
     private String columns;
 
+    @Transient
+    private StateOperation operation;
+
     public State() {
     }
 
@@ -28,12 +32,12 @@ public class State {
         this.columns = columns;
     }
 
-    public State(Integer id, String schema, String table, String columns
-    ) {
+    public State(Integer id, String schema, String table, String columns, StateOperation operation) {
         this.id = id;
         this.schema = schema;
         this.table = table;
         this.columns = columns;
+        this.operation = operation;
     }
 
     public Integer getId() {
@@ -66,5 +70,13 @@ public class State {
 
     public void setColumns(String columns) {
         this.columns = columns;
+    }
+
+    public StateOperation getOperation() {
+        return operation;
+    }
+
+    public void setOperation(StateOperation operation) {
+        this.operation = operation;
     }
 }

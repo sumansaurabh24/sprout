@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.kickdrum.internal.sprout.builder.StateBuilder;
+import com.kickdrum.internal.sprout.enums.StateOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -54,7 +55,12 @@ public class ServerServiceImpl implements ServerService {
 					tableSchema = (String) entry.getValue();
 				}
 			}
-			State s = new StateBuilder().setSchema(tableSchema).setTable(tableName).setColumns(columns).createState();
+			State s = new StateBuilder()
+					.setSchema(tableSchema)
+					.setTable(tableName)
+					.setColumns(columns)
+					.setOperation(StateOperation.ADD)
+					.createState();
 			initStates.add(s);
 		}
 		stateDao.saveAll(initStates);
