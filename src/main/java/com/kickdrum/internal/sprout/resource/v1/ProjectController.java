@@ -3,6 +3,7 @@ package com.kickdrum.internal.sprout.resource.v1;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,7 @@ import com.kickdrum.internal.sprout.service.ProjectService;
 public class ProjectController {
 
 	@Autowired
-	private ProjectService service;
+	private ProjectService projectService;
 
 	@GetMapping("")
 	public String addProjectPage(Model model) {
@@ -28,7 +29,7 @@ public class ProjectController {
 	public String save(Project project, Model model) {
 		boolean success = false;
 
-		Project savedProject = service.save(project);
+		Project savedProject = projectService.save(project);
 		if (savedProject.getId() != 0) {
 			success = true;
 		}
@@ -36,10 +37,9 @@ public class ProjectController {
 		model.addAttribute("success", success);
 		return "add-project";
 	}
-
 	@GetMapping("/list")
 	public String listProjects(Model model) {
-		List<Project> projects = service.findAll();
+		List<Project> projects = projectService.findAll();
 		model.addAttribute("projects", projects);
 		return "list-project";
 	}
