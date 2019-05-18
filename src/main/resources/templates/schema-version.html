@@ -73,8 +73,12 @@
                                     <ul class="list-group">
                                         <li class="list-group-item active" th:text="${state.table}"></li>
                                         <li class="list-group-item" th:each="operation: ${operationList}">
-                                            <p>[[${operation.affectedColumn}]] <span class="label" th:classappend="${operation.operation == 'ADD'} ? label-success : label-danger">[[${operation.operation}]]</span></p>
-                                            <a href="#">@author :</a> Suman Saurabh
+                                            <p>
+                                                [[${operation.affectedColumn}]]
+                                                <span class="label" th:classappend="${operation.operation == 'ADD'} ? label-success : label-danger">[[${operation.operation}]]</span>
+                                            </p>
+                                            <a href="#" style="font-size:10px">@author : Suman Saurabh</a> <br/>
+                                            <a href="#" style="font-size:10px">@date : [[${#dates.format(operation.modifiedAt, 'dd-MMM-yyyy')}]] </a>
                                         </li>
                                     </ul>
                                 </div>
