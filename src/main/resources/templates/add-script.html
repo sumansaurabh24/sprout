@@ -28,55 +28,64 @@
             <a class="navbar-brand" href="#">Sprout</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/schema/version?id=1">Schema Version</a></li>
+            </ul>
         </div><!--/.navbar-collapse -->
     </div>
 </nav>
 <div class="container">
-    <form method="post" action="/scripts/save" enctype="multipart/form-data">
-        <div class="form-group">
-            <label>Title</label>
-            <input type="text" class="form-control" name="title" placeholder="Script Title">
-        </div>sc
-
-        <div class="form-group">
-            <label>Jira Id</label>
-            <select name="jiraId" class="form-control">
-                <option>Select Jira Id</option>
-                <option scriptData="1">Jira-1</option>
-                <option scriptData="2">Jira-2</option>
-                <option scriptData="3">Jira-3</option>
-            </select>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Add Scripts
         </div>
+        <div class="panel-body">
+            <form method="post" action="/scripts/save" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" class="form-control" name="title" placeholder="Script Title">
+                </div>sc
 
-        <div>
-            <label> Script File</label>
-            <input type="file" name="file" size="50"/>
+                <div class="form-group">
+                    <label>Jira Id</label>
+                    <select name="jiraId" class="form-control">
+                        <option>Select Jira Id</option>
+                        <option scriptData="1">Jira-1</option>
+                        <option scriptData="2">Jira-2</option>
+                        <option scriptData="3">Jira-3</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label> Script File</label>
+                    <input type="file" name="file" size="50"/>
+                </div>
+
+                <div>
+                    &nbsp;
+                </div>
+                <div class="form-group">
+                    <label>Sprint</label>
+                    <select name="sprint" class="form-control">
+                        <option>Select Sprint Name</option>
+                        <option th:each="sprint: ${sprints}" th:text="${sprint.name}"></option>
+
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label>Projects</label>
+                    <select name="projectId" class="form-control">
+                        <option>Select a project</option>
+                        <option th:each="project: ${projects}" scriptData="${project.id}" th:text="${project.name}"></option>
+                    </select>
+                </div>
+                <input type="hidden" name="userId" value="1">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
         </div>
-
-        <div>
-            &nbsp;
-        </div>
-        <div class="form-group">
-            <label>Sprint</label>
-            <select name="sprint" class="form-control">
-                <option>Select Sprint Name</option>
-                <option th:each="sprint: ${sprints}" th:text="${sprint.name}"></option>
-
-            </select>
-        </div>
-
-
-        <div class="form-group">
-            <label>Projects</label>
-            <select name="projectId" class="form-control">
-                <option>Select a project</option>
-                <option th:each="project: ${projects}" scriptData="${project.id}" th:text="${project.name}"></option>
-            </select>
-        </div>
-        <input type="hidden" name="userId" value="1">
-        <button type="submit" class="btn btn-default">Submit</button>
-    </form>
+    </div>
     <hr>
 
     <footer>

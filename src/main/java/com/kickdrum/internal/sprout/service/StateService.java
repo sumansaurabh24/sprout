@@ -12,8 +12,10 @@ public interface StateService {
 
 	State save(State state);
 
-	List<State> getAllStates();
+	List<State> findAll();
 
 	State findStateBySchemaAndTable(String schema, String table);
+
+	State findById(Integer id);
 
 }

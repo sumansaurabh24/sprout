@@ -30,71 +30,69 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ScriptServiceImpl implements ScriptService {
 
-	@Autowired
-	private ScriptDao scriptDao;
+    @Autowired
+    private ScriptDao scriptDao;
 
-	@Autowired
-	private SqlParser sqlParser;
+    @Autowired
+    private SqlParser sqlParser;
 
-	@Autowired
-	private StateService stateService;
+    @Autowired
+    private StateService stateService;
 
-	@Autowired
-	private OperationService operationService;
+    @Autowired
+    private OperationService operationService;
 
-	@Override
-	public Script findById(Long id) {
-		return scriptDao.findById(id).orElse(null);
-	}
+    @Override
+    public Script findById(Long id) {
+        return scriptDao.findById(id).orElse(null);
+    }
 
-	@Override
-	public Script save(Script scriptInput) {
-		return scriptDao.save(scriptInput);
-	}
+    @Override
+    public Script save(Script scriptInput) {
+        return scriptDao.save(scriptInput);
+    }
 
-	@Override
-	public List<Script> findAll() {
-		return scriptDao.findAll();
-	}
+    @Override
+    public List<Script> findAll() {
+        return scriptDao.findAll();
+    }
 
-	@Override
-	public void process(Script script) throws JSQLParserException, SproutException {
-		// validate the script
-		List<Statement> statements = sqlParser.validateScript(script.getScriptData());
+    @Override
+    public void process(Script script) throws JSQLParserException, SproutException {
+        // validate the script
+        List<Statement> statements = sqlParser.validateScript(script.getScriptData());
+        //find dependencies
+//        findDependencies(statements, stateService.findAll());
+        // persist the script
+        save(script);
+        // persist state and operation
+        saveStateAndOperation(script, statements);
+    }
 
-		findDependencies(statements, stateService.getAllStates());
-		// persist the script
-		save(script);
+    private void saveStateAndOperation(Script script, List<Statement> statements) {
+        String schema = "test";
+        Integer userId = 2;
 
-		// persist state and operation
-		saveStateAndOperation(script, statements);
+        // set database.schema name
+        sqlParser.setSchema(schema);
+        // set user id as modifier
+        sqlParser.setModifier(userId);
 
-	}
-
-	private void saveStateAndOperation(Script script, List<Statement> statements) {
-	    String schema = "test";
-	    Integer userId = 2;
-
-		// set database.schema name
-		sqlParser.setSchema(schema);
-		// set user id as modifier
-		sqlParser.setModifier(userId);
-
-		List<StateOperationWrapper> stateOperationWrappers = sqlParser.parse(statements);
-		for (StateOperationWrapper wrapper : stateOperationWrappers) {
-		    State state = wrapper.getState();
-		    //check the operation
-            if(!state.getOperation().equals(StateOperation.ADD)) {
-				State existingState = stateService.findStateBySchemaAndTable(state.getSchema(), state.getTable());
-				wrapper = AppUtil.modifyStateColumnList(wrapper, existingState);
-				state = wrapper.getState();
+        List<StateOperationWrapper> stateOperationWrappers = sqlParser.parse(statements);
+        for (StateOperationWrapper wrapper : stateOperationWrappers) {
+            State state = wrapper.getState();
+            //check the operation
+            if (!state.getOperation().equals(StateOperation.ADD)) {
+                State existingState = stateService.findStateBySchemaAndTable(state.getSchema(), state.getTable());
+                wrapper = AppUtil.modifyStateColumnList(wrapper, existingState);
+                state = wrapper.getState();
             }
-			state = stateService.save(state);
-			saveOperations(wrapper.getOperations(), state.getId(), script.getId());
-		}
-	}
+            state = stateService.save(state);
+            saveOperations(wrapper.getOperations(), state.getId(), script.getId());
+        }
+    }
 
-    private void saveOperations(List<Operation> operations, Integer stateId, Integer scriptId){
+    private void saveOperations(List<Operation> operations, Integer stateId, Integer scriptId) {
         for (Operation operation : operations) {
             operation.setStateId(stateId);
             operation.setScriptId(scriptId);
@@ -102,92 +100,92 @@ public class ScriptServiceImpl implements ScriptService {
         }
     }
 
-	private void findDependencies(List<Statement> statements, List<State> allStates) throws SproutException {
-		for (Statement statement : statements) {
-			if (statement instanceof CreateTable) {
-				String tableName = ((CreateTable) statement).getTable().getName();
-				checkIfTableAlreadyExists(allStates, tableName);
-				List<Index> indexes = ((CreateTable) (statement)).getIndexes();
-				if (indexes != null) {
-					checkForAnyKeyDependency(allStates, indexes, tableName);
-				}
-			} else if (statement instanceof Alter) {
-				List<AlterExpression> expressions = ((Alter) statement).getAlterExpressions();
-				String tableName = ((Alter) statement).getTable().getName();
-				checkIfTableExists(allStates, tableName);
-				for (AlterExpression alterExpression : expressions) {
-					String operation = alterExpression.getOperation().name();
-					switch (operation) {
-					case "ADD":
-						checkIfColumnNotExists(allStates, alterExpression, tableName);
-						break;
-					case "DROP":
-						checkIfColumnExistsAlready(allStates, alterExpression, tableName);
-						break;
-					default:
-						checkIfColumnExistsAlready(allStates, alterExpression, tableName);
-					}
-				}
+    private void findDependencies(List<Statement> statements, List<State> allStates) throws SproutException {
+        for (Statement statement : statements) {
+            if (statement instanceof CreateTable) {
+                String tableName = ((CreateTable) statement).getTable().getName();
+                checkIfTableAlreadyExists(allStates, tableName);
+                List<Index> indexes = ((CreateTable) (statement)).getIndexes();
+                if (indexes != null) {
+                    checkForAnyKeyDependency(allStates, indexes, tableName);
+                }
+            } else if (statement instanceof Alter) {
+                List<AlterExpression> expressions = ((Alter) statement).getAlterExpressions();
+                String tableName = ((Alter) statement).getTable().getName();
+                checkIfTableExists(allStates, tableName);
+                for (AlterExpression alterExpression : expressions) {
+                    String operation = alterExpression.getOperation().name();
+                    switch (operation) {
+                        case "ADD":
+                            checkIfColumnNotExists(allStates, alterExpression, tableName);
+                            break;
+                        case "DROP":
+                            checkIfColumnExistsAlready(allStates, alterExpression, tableName);
+                            break;
+                        default:
+                            checkIfColumnExistsAlready(allStates, alterExpression, tableName);
+                    }
+                }
 
-			}
-		}
-	}
+            }
+        }
+    }
 
-	private void checkIfTableExists(List<State> allStates, String tableName) throws SproutException {
-		if (allStates.stream().filter(state -> state.getTable().equalsIgnoreCase(tableName))
-				.collect(Collectors.toList()).size() == 0) {
-			throw new SproutException("Table " + tableName + " does not exist");
-		}
-	}
+    private void checkIfTableExists(List<State> allStates, String tableName) throws SproutException {
+        if (allStates.stream().filter(state -> state.getTable().equalsIgnoreCase(tableName))
+                .collect(Collectors.toList()).size() == 0) {
+            throw new SproutException("Table " + tableName + " does not exist");
+        }
+    }
 
-	private void checkIfColumnExistsAlready(List<State> allStates, AlterExpression alterExpression, String tableName)
-			throws SproutException {
+    private void checkIfColumnExistsAlready(List<State> allStates, AlterExpression alterExpression, String tableName)
+            throws SproutException {
 
-		if (allStates.stream()
-				.filter(state -> state.getTable().equalsIgnoreCase(tableName)
-						&& state.getColumns().contains(alterExpression.getColDataTypeList().get(0).getColumnName()))
-				.collect(Collectors.toList()).size() == 0) {
-			throw new SproutException("Column " + tableName + "."
-					+ alterExpression.getColDataTypeList().get(0).getColumnName() + " doesn't exist already");
-		}
-	}
+        if (allStates.stream()
+                .filter(state -> state.getTable().equalsIgnoreCase(tableName)
+                        && state.getColumns().contains(alterExpression.getColDataTypeList().get(0).getColumnName()))
+                .collect(Collectors.toList()).size() == 0) {
+            throw new SproutException("Column " + tableName + "."
+                    + alterExpression.getColDataTypeList().get(0).getColumnName() + " doesn't exist already");
+        }
+    }
 
-	private void checkIfColumnNotExists(List<State> allStates, AlterExpression alterExpression, String tableName)
-			throws SproutException {
-		if (allStates.stream()
-				.filter(state -> state.getTable().equalsIgnoreCase(tableName)
-						&& state.getColumns().contains(alterExpression.getColDataTypeList().get(0).getColumnName()))
-				.collect(Collectors.toList()).size() > 0) {
-			throw new SproutException("Column " + tableName + "."
-					+ alterExpression.getColDataTypeList().get(0).getColumnName() + " exists already");
-		}
-	}
+    private void checkIfColumnNotExists(List<State> allStates, AlterExpression alterExpression, String tableName)
+            throws SproutException {
+        if (allStates.stream()
+                .filter(state -> state.getTable().equalsIgnoreCase(tableName)
+                        && state.getColumns().contains(alterExpression.getColDataTypeList().get(0).getColumnName()))
+                .collect(Collectors.toList()).size() > 0) {
+            throw new SproutException("Column " + tableName + "."
+                    + alterExpression.getColDataTypeList().get(0).getColumnName() + " exists already");
+        }
+    }
 
-	private void checkForAnyKeyDependency(List<State> allStates, List<Index> indexes, String tableName)
-			throws SproutException {
-		for (Index index : indexes) {
-			if (index instanceof ForeignKeyIndex) {
-				ForeignKeyIndex fki = (ForeignKeyIndex) index;
-				String columnName = fki.getColumnsNames().get(0);
-				String referencesTable = fki.getTable().getName();
-				String referencedColumn = fki.getReferencedColumnNames().get(0);
-				if (allStates.stream()
-						.filter(state -> state.getTable().equalsIgnoreCase(referencesTable)
-								&& state.getColumns().contains(referencedColumn))
-						.collect(Collectors.toList()).size() == 0) {
-					throw new SproutException(tableName + "." + columnName + " ForeignKey - " + referencesTable + "."
-							+ referencedColumn + " does not exists");
-				}
+    private void checkForAnyKeyDependency(List<State> allStates, List<Index> indexes, String tableName)
+            throws SproutException {
+        for (Index index : indexes) {
+            if (index instanceof ForeignKeyIndex) {
+                ForeignKeyIndex fki = (ForeignKeyIndex) index;
+                String columnName = fki.getColumnsNames().get(0);
+                String referencesTable = fki.getTable().getName();
+                String referencedColumn = fki.getReferencedColumnNames().get(0);
+                if (allStates.stream()
+                        .filter(state -> state.getTable().equalsIgnoreCase(referencesTable)
+                                && state.getColumns().contains(referencedColumn))
+                        .collect(Collectors.toList()).size() == 0) {
+                    throw new SproutException(tableName + "." + columnName + " ForeignKey - " + referencesTable + "."
+                            + referencedColumn + " does not exists");
+                }
 
-			}
+            }
 
-		}
-	}
+        }
+    }
 
-	private void checkIfTableAlreadyExists(List<State> allStates, String tableName) throws SproutException {
-		if (allStates.stream().filter(state -> state.getTable().equalsIgnoreCase(tableName))
-				.collect(Collectors.toList()).size() > 0) {
-			throw new SproutException(tableName + " already exists");
-		}
-	}
+    private void checkIfTableAlreadyExists(List<State> allStates, String tableName) throws SproutException {
+        if (allStates.stream().filter(state -> state.getTable().equalsIgnoreCase(tableName))
+                .collect(Collectors.toList()).size() > 0) {
+            throw new SproutException(tableName + " already exists");
+        }
+    }
 }

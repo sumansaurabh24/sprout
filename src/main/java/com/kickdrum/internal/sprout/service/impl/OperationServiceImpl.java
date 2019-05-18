@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @Slf4j
 public class OperationServiceImpl implements OperationService {
@@ -17,5 +19,15 @@ public class OperationServiceImpl implements OperationService {
     @Override
     public Operation save(Operation operation) {
         return operationDao.save(operation);
+    }
+
+    @Override
+    public List<Operation> findByStateIdAndGroupedByScriptId(Integer stateId) {
+        return operationDao.findByStateIdAndGroupedByScriptId(stateId);
+    }
+
+    @Override
+    public List<Operation> findByStateIdAndScriptId(Integer stateId, Integer scriptId) {
+        return  operationDao.findByStateIdAndScriptId(stateId, scriptId);
     }
 }

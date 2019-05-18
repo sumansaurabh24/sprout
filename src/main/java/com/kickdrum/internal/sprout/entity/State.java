@@ -3,6 +3,10 @@ package com.kickdrum.internal.sprout.entity;
 import com.kickdrum.internal.sprout.enums.StateOperation;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 public class State {
@@ -22,6 +26,9 @@ public class State {
 
     @Transient
     private StateOperation operation;
+
+    @Transient
+    private List<String> columnList;
 
     public State() {
     }
@@ -72,5 +79,14 @@ public class State {
 
     public void setOperation(StateOperation operation) {
         this.operation = operation;
+    }
+
+    public List<String> getColumnList() {
+        List<String> list = new ArrayList<>(Arrays.asList(columns.split(",")));
+        return list;
+    }
+
+    public void setColumnList(List<String> columnList) {
+        this.columnList = columnList;
     }
 }

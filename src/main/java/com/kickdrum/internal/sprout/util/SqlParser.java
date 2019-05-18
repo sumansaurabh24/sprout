@@ -8,6 +8,7 @@ import java.util.List;
 import com.kickdrum.internal.sprout.builder.StateBuilder;
 import net.sf.jsqlparser.statement.alter.Alter;
 import net.sf.jsqlparser.statement.alter.AlterExpression;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -101,16 +102,15 @@ public class SqlParser {
         Table table = createTable.getTable();
         List<Operation> operations = new ArrayList<>();
 
-        StringBuffer columns = new StringBuffer();
+        List<String> columns = new ArrayList<>();
         for (ColumnDefinition columnDefinition : columnDefinitions) {
-            columns.append(columnDefinition.getColumnName()).append(",");
+            columns.add(columnDefinition.getColumnName());
             Operation operation = new OperationBuilder().setOperation(StateOperation.ADD.toString())
                     .setAffectedColumn(columnDefinition.getColumnName()).setModifiedAt(Instant.now())
                     .setModifiedBy(modifier).createOperation();
             operations.add(operation);
         }
-        String columnWithComma = columns.toString();
-        columnWithComma.replaceAll(",$", "");
+        String columnWithComma = StringUtils.join(columns, ",");
 
         State state = new StateBuilder().setColumns(columnWithComma).setSchema(schema).setTable(table.getName())
                 .setOperation(StateOperation.ADD).createState();

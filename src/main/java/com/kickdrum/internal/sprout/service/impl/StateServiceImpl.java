@@ -24,12 +24,17 @@ public class StateServiceImpl implements StateService {
 	}
 
 	@Override
-	public List<State> getAllStates() {
+	public List<State> findAll() {
 		return stateDao.findAll();
 	}
 
 	@Override
 	public State findStateBySchemaAndTable(String schema, String table) {
 		return stateDao.findBySchemaAndTable(schema, table);
+	}
+
+	@Override
+	public State findById(Integer id) {
+		return stateDao.findById(id).orElse(null);
 	}
 }
