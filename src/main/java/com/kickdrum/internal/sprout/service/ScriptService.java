@@ -6,11 +6,16 @@ import org.springframework.stereotype.Service;
 
 import com.kickdrum.internal.sprout.entity.Script;
 
+import net.sf.jsqlparser.JSQLParserException;
+
 @Service
 public interface ScriptService {
 
-    Script findById(Long id);
-    Script save(Script scriptInput);
-    List<Script> findAll();
-    boolean process(Script script);
+	Script findById(Long id);
+
+	Script save(Script scriptInput);
+
+	List<Script> findAll();
+
+	void process(Script script) throws JSQLParserException;
 }

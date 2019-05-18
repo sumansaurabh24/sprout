@@ -1,142 +1,117 @@
 package com.kickdrum.internal.sprout.util;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
 import com.kickdrum.internal.sprout.builder.OperationBuilder;
 import com.kickdrum.internal.sprout.builder.StateBuilder;
 import com.kickdrum.internal.sprout.entity.Operation;
 import com.kickdrum.internal.sprout.entity.State;
 import com.kickdrum.internal.sprout.enums.StateOperation;
 import com.kickdrum.internal.sprout.model.StateOperationWrapper;
+
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Component
 public class SqlParser {
 
-    private Integer modifier;
-    private String schema;
-    private static final Logger logger = LoggerFactory.getLogger(SqlParser.class);
+	private Integer modifier;
+	private String schema;
+	private static final Logger logger = LoggerFactory.getLogger(SqlParser.class);
 
-    public void setModifier(Integer modifier) {
-        this.modifier = modifier;
-    }
+	public void setModifier(Integer modifier) {
+		this.modifier = modifier;
+	}
 
-    public void setSchema(String schema) {
-        this.schema = schema;
-    }
+	public void setSchema(String schema) {
+		this.schema = schema;
+	}
 
-    /**
-     * Parse batch query string
-     * @param query
-     * @return
-     */
-    public List<StateOperationWrapper> parse(String query) {
-        //split the batch file
-        String[] queryList = query.split(";");
-        List<String> queries = Arrays.asList(queryList);
-        List<StateOperationWrapper> states = new ArrayList<>();
-        for (String queryStr : queries) {
-            states.add(getState(queryStr));
-        }
-        return states;
-    }
+	/**
+	 * Parse batch query string
+	 * 
+	 * @param statements
+	 * @return
+	 */
+	public List<StateOperationWrapper> parse(List<Statement> statements) {
+		// split the batch file
+		List<StateOperationWrapper> states = new ArrayList<>();
+		for (Statement statement : statements) {
+			states.add(getState(statement));
+		}
+		return states;
+	}
 
-    /**
-     * Get Statement Obejct
-     *
-     * @param query
-     * @return
-     */
-    public Statement getStatement(String query){
-        Statement statement = null;
-        try {
-            statement = CCJSqlParserUtil.parse(query);
-        } catch (JSQLParserException e) {
-            logger.error("Error while parsing the script: " + e.getMessage(), e);
-            statement = null;
-        }
-        return statement;
-    }
+	/**
+	 * Validate batch query string
+	 *
+	 * @param query
+	 * @return
+	 * @throws JSQLParserException
+	 */
+	public List<Statement> validateScript(String query) throws JSQLParserException {
+		String[] queryList = query.split(";");
+		List<String> queries = Arrays.asList(queryList);
+		List<Statement> statements = new ArrayList<Statement>();
+		for (String queryStr : queries) {
+			Statement statement = CCJSqlParserUtil.parse(queryStr);
+			statements.add(statement);
+		}
+		return statements;
+	}
 
-    /**
-     * Validate batch query string
-     *
-     * @param query
-     * @return
-     */
-    public boolean validateScript(String query){
-        boolean flag = true;
-        String[] queryList = query.split(";");
-        List<String> queries = Arrays.asList(queryList);
-        for (String queryStr : queries) {
-            Statement statement = getStatement(queryStr);
-            if(statement == null){
-                flag = false;
-                break;
-            }
-        }
-        return flag;
-    }
+	/**
+	 * Get {@link State} Object from string query
+	 *
+	 * @param query
+	 * @return
+	 */
+	private StateOperationWrapper getState(Statement statement) {
 
-    /**
-     * Get {@link State} Object from string query
-     *
-     * @param query
-     * @return
-     */
-    private StateOperationWrapper getState(String query) {
-        Statement statement = getStatement(query);
+		if (statement instanceof CreateTable) {
+			return getStateForCreateTable((CreateTable) statement);
+		}
 
-        if (statement instanceof CreateTable) {
-            return getStateForCreateTable((CreateTable) statement);
-        }
+		return null;
+	}
 
-        return null;
-    }
+	/**
+	 * Get State for create table query
+	 *
+	 * @param createTable
+	 * @return
+	 */
+	private StateOperationWrapper getStateForCreateTable(CreateTable createTable) {
+		List<ColumnDefinition> columnDefinitions = createTable.getColumnDefinitions();
+		Table table = createTable.getTable();
+		List<Operation> operations = new ArrayList<>();
 
-    /**
-     * Get State for create table query
-     *
-     * @param createTable
-     * @return
-     */
-    private StateOperationWrapper getStateForCreateTable(CreateTable createTable) {
-        List<ColumnDefinition> columnDefinitions = createTable.getColumnDefinitions();
-        Table table = createTable.getTable();
-        List<Operation> operations = new ArrayList<>();
+		StringBuffer columns = new StringBuffer();
+		for (ColumnDefinition columnDefinition : columnDefinitions) {
+			columns.append(columnDefinition.getColumnName()).append(",");
+			Operation operation = new OperationBuilder().setOperation(StateOperation.ADD.toString())
+					.setAffectedColumn(columnDefinition.getColumnName()).setModifiedAt(Instant.now())
+					.setModifiedBy(modifier).createOperation();
+			operations.add(operation);
+		}
 
-        StringBuffer columns = new StringBuffer();
-        for (ColumnDefinition columnDefinition : columnDefinitions) {
-            columns.append(columnDefinition.getColumnName()).append(",");
-            Operation operation = new OperationBuilder()
-                    .setOperation(StateOperation.ADD.toString())
-                    .setAffectedColumn(columnDefinition.getColumnName())
-                    .setModifiedAt(Instant.now())
-                    .setModifiedBy(modifier)
-                    .createOperation();
-            operations.add(operation);
-        }
+		State state = new StateBuilder().setColumns(columns.toString()).setSchema(schema).setTable(table.getName())
+				.createState();
 
-        State state = new StateBuilder()
-                .setColumns(columns.toString())
-                .setSchema(schema)
-                .setTable(table.getName())
-                .createState();
-
-        StateOperationWrapper stateOperationWrapper = new StateOperationWrapper();
-        stateOperationWrapper.setState(state);
-        stateOperationWrapper.setOperations(operations);
-        return stateOperationWrapper;
-    }
+		StateOperationWrapper stateOperationWrapper = new StateOperationWrapper();
+		stateOperationWrapper.setState(state);
+		stateOperationWrapper.setOperations(operations);
+		return stateOperationWrapper;
+	}
 }

@@ -1,5 +1,7 @@
 package com.kickdrum.internal.sprout.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,11 +15,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class StateServiceImpl implements StateService {
 
-    @Autowired
-    private StateDao stateDao;
+	@Autowired
+	private StateDao stateDao;
 
-    @Override
-    public State save(State state) {
-        return stateDao.save(state);
-    }
+	@Override
+	public State save(State state) {
+		return stateDao.save(state);
+	}
+
+	@Override
+	public List<State> getAllStates() {
+		return stateDao.findAll();
+	}
 }
