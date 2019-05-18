@@ -1,16 +1,17 @@
 package com.kickdrum.internal.sprout.service;
 
-import com.kickdrum.internal.sprout.entity.Operation;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.kickdrum.internal.sprout.entity.Operation;
 
 @Service
 public interface OperationService {
 
-    Operation save(Operation state);
+	Operation save(Operation state);
 
-    List<Operation> findByStateIdAndGroupedByScriptId(Integer stateId);
+	List<Operation> findByStateIdAndGroupedByScriptId(Integer stateId);
 
-    List<Operation> findByStateIdAndScriptId(Integer stateId, Integer scriptId);
+	List<Operation> findByStateIdAndScriptId(Integer stateId, Integer scriptId);
 }

@@ -7,15 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.kickdrum.internal.sprout.builder.StateBuilder;
-import com.kickdrum.internal.sprout.enums.StateOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.kickdrum.internal.sprout.builder.StateBuilder;
 import com.kickdrum.internal.sprout.dao.ServerDao;
 import com.kickdrum.internal.sprout.dao.StateDao;
 import com.kickdrum.internal.sprout.entity.Server;
 import com.kickdrum.internal.sprout.entity.State;
+import com.kickdrum.internal.sprout.enums.StateOperation;
 import com.kickdrum.internal.sprout.service.ServerService;
 
 import lombok.extern.slf4j.Slf4j;

@@ -1,14 +1,15 @@
 package com.kickdrum.internal.sprout.util;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.kickdrum.internal.sprout.entity.Operation;
 import com.kickdrum.internal.sprout.entity.State;
 import com.kickdrum.internal.sprout.enums.StateOperation;
 import com.kickdrum.internal.sprout.model.StateOperationWrapper;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 
 public class AppUtil {
 

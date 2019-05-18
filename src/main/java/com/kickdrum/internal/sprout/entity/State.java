@@ -1,12 +1,17 @@
 package com.kickdrum.internal.sprout.entity;
 
-import com.kickdrum.internal.sprout.enums.StateOperation;
-
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+
+import com.kickdrum.internal.sprout.enums.StateOperation;
 
 @Entity
 public class State {
@@ -23,6 +28,9 @@ public class State {
 
     @Column(name = "column_list")
     private String columns;
+    
+    @Column
+    private Integer scriptId;
 
     @Transient
     private StateOperation operation;
@@ -89,4 +97,20 @@ public class State {
     public void setColumnList(List<String> columnList) {
         this.columnList = columnList;
     }
+
+	/**
+	 * @return the scriptId
+	 */
+	public Integer getScriptId() {
+		return scriptId;
+	}
+
+	/**
+	 * @param scriptId the scriptId to set
+	 */
+	public void setScriptId(Integer scriptId) {
+		this.scriptId = scriptId;
+	}
+    
+    
 }

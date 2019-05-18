@@ -1,9 +1,8 @@
 package com.kickdrum.internal.sprout.resource.v1;
 
-import com.kickdrum.internal.sprout.entity.Operation;
-import com.kickdrum.internal.sprout.entity.State;
-import com.kickdrum.internal.sprout.service.OperationService;
-import com.kickdrum.internal.sprout.service.StateService;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,8 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.kickdrum.internal.sprout.entity.Operation;
+import com.kickdrum.internal.sprout.entity.State;
+import com.kickdrum.internal.sprout.service.OperationService;
+import com.kickdrum.internal.sprout.service.StateService;
 
 @Controller
 @RequestMapping("/schema")

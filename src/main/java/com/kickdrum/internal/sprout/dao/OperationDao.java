@@ -1,11 +1,12 @@
 package com.kickdrum.internal.sprout.dao;
 
-import com.kickdrum.internal.sprout.entity.Operation;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.kickdrum.internal.sprout.entity.Operation;
 
 @Repository
 public interface OperationDao extends JpaRepository<Operation, Integer> {
