@@ -3,6 +3,11 @@ package com.kickdrum.internal.sprout.resource.v1;
 import java.io.IOException;
 import java.util.List;
 
+import com.kickdrum.internal.sprout.entity.Project;
+import com.kickdrum.internal.sprout.entity.Script;
+import com.kickdrum.internal.sprout.entity.Sprint;
+import com.kickdrum.internal.sprout.service.ProjectService;
+import com.kickdrum.internal.sprout.service.ScriptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,11 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.kickdrum.internal.sprout.entity.Project;
-import com.kickdrum.internal.sprout.entity.Script;
-import com.kickdrum.internal.sprout.service.ProjectService;
-import com.kickdrum.internal.sprout.service.ScriptService;
 
 import net.sf.jsqlparser.JSQLParserException;
 
@@ -33,6 +33,8 @@ public class ScriptsController {
 	public String addScriptsPage(Model model) {
 		List<Project> projects = projectService.findAll();
 		model.addAttribute("projects", projects);
+		List<Sprint> sprints = projectService.findAllSprints();
+		model.addAttribute("sprints",sprints);
 		return "add-script";
 	}
 
