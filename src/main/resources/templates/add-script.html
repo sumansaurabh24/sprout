@@ -40,50 +40,76 @@
             Add Scripts
         </div>
         <div class="panel-body">
-            <form method="post" action="/scripts/save" enctype="multipart/form-data">
+            <form method="post" action="/scripts/save" enctype="multipart/form-data" name="scriptForm" id="scriptForm">
                 <div class="form-group">
                     <label>Title</label>
                     <input type="text" class="form-control" name="title" placeholder="Script Title">
-                </div>sc
+                    
+                </div>
 
+				<div class="form-group">
+                    <label>Projects</label>
+                    <select name="projectId" class="form-control" id="projectId">
+                        <option value="-1">Select a project</option>
+                        <option th:each="project: ${projects}" th:value="${project.id}" th:text="${project.name}"></option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Sprint</label>
+                    <select name="sprint" class="form-control" id="sprint">
+                    </select>
+                </div>
+                
                 <div class="form-group">
                     <label>Jira Id</label>
-                    <select name="jiraId" class="form-control">
-                        <option>Select Jira Id</option>
-                        <option scriptData="1">Jira-1</option>
-                        <option scriptData="2">Jira-2</option>
-                        <option scriptData="3">Jira-3</option>
+                    <select id="jiraId" name="jiraId" class="form-control">
+                        <option value=-1>Select Jira Id</option>
+                        <option scriptData="1">TKT-1</option>
+                        <option scriptData="2">TKT-2</option>
+                        <option scriptData="3">TKT-3</option>
                     </select>
                 </div>
 
                 <div>
                     <label> Script File</label>
-                    <input type="file" name="file" size="50"/>
+                    <input type="file" name="file" size="50" id="file"/>
                 </div>
 
                 <div>
                     &nbsp;
                 </div>
-                <div class="form-group">
-                    <label>Sprint</label>
-                    <select name="sprint" class="form-control">
-                        <option>Select Sprint Name</option>
-                        <option th:each="sprint: ${sprints}" th:text="${sprint.name}"></option>
 
-                    </select>
-                </div>
-
-
-                <div class="form-group">
-                    <label>Projects</label>
-                    <select name="projectId" class="form-control">
-                        <option>Select a project</option>
-                        <option th:each="project: ${projects}" scriptData="${project.id}" th:text="${project.name}"></option>
-                    </select>
-                </div>
                 <input type="hidden" name="userId" value="1">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" onclick="return validate()">Submit</button>
+                
+                <div>
+                	&nbsp;
+                </div>
+                <div>
+                	<p style="color:red" id="errorMessage" th:text="${errorMessage}"></p>
+                	<p style="color:green" id="successMessage" th:text="${successMessage}"></p>
+                </div>
             </form>
+        </div>
+        <div class="panel-heading">
+            Sequence of Scripts
+        </div>
+        <div class="panel-body">
+        <div class="row col-md-7 table-responsive">
+        	<table class="table">
+        	<tr>
+        		<th>ID</th>
+        		<th>Dependent On</th>
+        		<th>Script Data</th>
+      		</tr>
+        	<tr th:each="script, rowStat: ${scriptsInOrder}" th:style="${rowStat.odd} ? 'color: gray' : 'color: blue;'">
+    			<td th:text="${script.id}" />
+    			<td th:text="${script.dependentScripts}" />
+    			<td th:text="${script.scriptData}" />
+			</tr>
+			</table>
+		</div>
         </div>
     </div>
     <hr>
@@ -97,8 +123,56 @@
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<scriptData src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></scriptData>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <scriptData src="/js/bootstrap.min.js"></scriptData>
+<script type="text/javascript">
+$("#projectId").change(function(){
+    var selectedProjectId = $(this).val();
+    $.ajax({
+        type: 'GET',
+        url: "/scripts/project/" + selectedProjectId+"/sprints",
+        success: function(data){
+            var sprint=$('#sprint'), option="";
+            sprint.empty();
+			option = option + "<option value='-1'>Select a Sprint</option>";
+            for(var i=0; i<data.length; i++){
+                option = option + "<option value='"+data[i].id + "'>"+data[i].name + "</option>";
+            }
+            sprint.append(option);
+        },
+        error:function(){
+            alert("error");
+        }
 
+    });
+});
+function validate(){
+	var error="";
+	var flag=true;
+	var pId = $("#projectId").val();
+	var sId = $("#sprint").val();
+	var jId = $("#jiraId").val();
+	var fil = $("#file").val();
+	if(pId==-1||pId==null){
+		error="Please select a Project";
+		flag=false;
+	}
+	else if(sId==-1||sId==null){
+		error="Please select a Sprint";
+		flag=false;
+	}
+	else if(jId==-1||jId==null){
+		error="Please select a Ticket";
+		flag=false;
+	}
+	else if(fil==""||fil==null){
+		error="Please upload the SQL File";
+		flag=false;
+	}
+	$("#errorMessage").text(error);
+	return flag;
+	
+}
+</script>
 
 </body></html>

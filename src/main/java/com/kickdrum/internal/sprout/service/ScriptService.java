@@ -20,5 +20,5 @@ public interface ScriptService {
 
 	void process(Script script) throws JSQLParserException, SproutException;
 
-	List<String> listSequence();
+	List<Script> listSequence();
 }

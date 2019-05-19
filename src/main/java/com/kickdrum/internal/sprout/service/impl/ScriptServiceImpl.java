@@ -87,7 +87,8 @@ public class ScriptServiceImpl implements ScriptService {
 	}
 
 	@Override
-	public List<String> listSequence() {
+	public List<Script> listSequence() {
+		List<Script> scriptsInOrder = new ArrayList<Script>();
 		Map<Integer, Node> nodesMap = new HashMap<Integer, Node>();
 		Node zerothNode = new Node(0);
 		List<Script> scripts = findAll();
@@ -112,9 +113,17 @@ public class ScriptServiceImpl implements ScriptService {
 		Stack<Node> resultStack = topological.stack;
 		List<String> sequence = new ArrayList<String>();
 		while (resultStack.empty() == false) {
-			sequence.add(resultStack.pop().toString());
+			String popped = resultStack.pop().toString();
+			sequence.add(popped);
+			if (popped == "0") {
+				scriptsInOrder
+						.addAll(scripts.stream().filter(script -> script.getId() == null).collect(Collectors.toList()));
+			} else {
+				scriptsInOrder.addAll(scripts.stream().filter(script -> script.getId() == Integer.parseInt(popped))
+						.collect(Collectors.toList()));
+			}
 		}
-		return sequence;
+		return scriptsInOrder;
 	}
 
 	private void saveStateAndOperation(Script script, List<Statement> statements) {
@@ -189,7 +198,7 @@ public class ScriptServiceImpl implements ScriptService {
 		List<State> filtered = allStates.stream().filter(state -> state.getTable().equalsIgnoreCase(tableName))
 				.collect(Collectors.toList());
 		if (filtered.size() == 0) {
-			throw new SproutException("Table " + tableName + " does not exist");
+			throw new SproutException("Alter statement, Table " + tableName + " does not exist.");
 		}
 		return filtered.get(0).getScriptId();
 	}
@@ -199,8 +208,8 @@ public class ScriptServiceImpl implements ScriptService {
 		List<State> filtered = allStates.stream().filter(state -> state.getTable().equalsIgnoreCase(tableName)
 				&& state.getColumns().contains(alterExpression.getColumnName())).collect(Collectors.toList());
 		if (filtered.size() == 0) {
-			throw new SproutException(
-					"Column " + tableName + "." + alterExpression.getColumnName() + " doesn't exist already");
+			throw new SproutException("The column used in your script, " + tableName + "."
+					+ alterExpression.getColumnName() + " doesn't exist.");
 		}
 		return filtered.get(0).getScriptId();
 	}
@@ -212,8 +221,8 @@ public class ScriptServiceImpl implements ScriptService {
 						&& state.getColumns().contains(alterExpression.getColDataTypeList().get(0).getColumnName()))
 				.collect(Collectors.toList());
 		if (filtered.size() == 0) {
-			throw new SproutException("Column " + tableName + "."
-					+ alterExpression.getColDataTypeList().get(0).getColumnName() + " doesn't exist already");
+			throw new SproutException("The column used in your script, " + tableName + "."
+					+ alterExpression.getColDataTypeList().get(0).getColumnName() + " doesn't exist");
 		}
 		return filtered.get(0).getScriptId();
 	}
@@ -225,7 +234,7 @@ public class ScriptServiceImpl implements ScriptService {
 						&& state.getColumns().contains(alterExpression.getColDataTypeList().get(0).getColumnName()))
 				.collect(Collectors.toList());
 		if (filtered.size() > 0) {
-			throw new SproutException("Column " + tableName + "."
+			throw new SproutException("The column used in your script, " + tableName + "."
 					+ alterExpression.getColDataTypeList().get(0).getColumnName() + " exists already");
 		}
 	}
@@ -244,8 +253,8 @@ public class ScriptServiceImpl implements ScriptService {
 								&& state.getColumns().contains(referencedColumn))
 						.collect(Collectors.toList());
 				if (filtered.size() == 0) {
-					throw new SproutException(tableName + "." + columnName + " ForeignKey - " + referencesTable + "."
-							+ referencedColumn + " does not exists");
+					throw new SproutException("The reference column used in, " + tableName + "." + columnName
+							+ "for foreignKey," + referencesTable + "." + referencedColumn + " does not exists");
 				}
 				if (filtered.get(0).getScriptId() != null) {
 					dependencies.add(filtered.get(0).getScriptId());

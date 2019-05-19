@@ -13,5 +13,5 @@ public interface ProjectService {
     Project findById(Long id);
     Project save(Project project);
     List<Project> findAll();
-    List<Sprint> findAllSprints();
+    List<Sprint> findAllSprints(Integer projectId);
 }

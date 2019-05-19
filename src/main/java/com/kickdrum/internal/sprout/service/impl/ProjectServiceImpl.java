@@ -59,8 +59,8 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<Sprint> findAllSprints(){
-        final String uri = "https://7hrtasvpbb.execute-api.ap-south-1.amazonaws.com/dev/projects/2/sprints";
+    public List<Sprint> findAllSprints(Integer projectId){
+        final String uri = "https://7hrtasvpbb.execute-api.ap-south-1.amazonaws.com/dev/projects/"+projectId+"/sprints";
         RestTemplate restTemplate = new RestTemplate();
 
 

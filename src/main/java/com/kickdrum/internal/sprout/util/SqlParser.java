@@ -68,8 +68,12 @@ public class SqlParser {
 		List<String> queries = Arrays.asList(queryList);
 		List<Statement> statements = new ArrayList<>();
 		for (String queryStr : queries) {
-			Statement statement = CCJSqlParserUtil.parse(queryStr);
-			statements.add(statement);
+			if (queryStr == null || queryStr.equals("") || queryStr.startsWith("#") || queryStr.startsWith("--")) {
+				// Do nothing
+			} else {
+				Statement statement = CCJSqlParserUtil.parse(queryStr);
+				statements.add(statement);
+			}
 		}
 		return statements;
 	}
